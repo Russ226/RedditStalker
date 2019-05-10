@@ -48,3 +48,11 @@ CREATE TABLE IF NOT EXISTS redditStalker.subredditsPostsJoin(
 	foreign key (post_id) REFERENCES posts(id),
 	foreign key (subreddit_id) REFERENCES subreddits(id)
 );
+
+CREATE TABLE IF NOT EXISTS redditStalker.subredditsUsersJoin(
+	id INT NOT NULL AUTO_INCREMENT,
+	subreddit_id INT NOT NULL,
+	user_id INT NOT NULL,
+	foreign key (user_id) REFERENCES users(id),
+	foreign key (subreddit_id) REFERENCES subreddits(id)
+);
