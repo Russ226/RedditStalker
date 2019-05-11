@@ -1,5 +1,7 @@
 import datetime
-import Models.SQLModels
+import Models.SQLModels.User as User
+import Models.SQLModels.Post as Post
+import Models.SQLModels.Subreddit as SR
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -32,10 +34,10 @@ class PostContainer:
     def create_user_model(self):
         session = PostContainer.startSession()
 
-        user = session.query(fm.User).filter_by(username=self.author).first()
+        user = session.query(User).filter_by(username=self.author).first()
 
         if user is None:
-            new_user = fm.User(
+            new_user = User.User(
                 username=self.author,
                 email=self.author + '@email.com',
                 password='123456',
@@ -48,22 +50,13 @@ class PostContainer:
 
         session.close()
 
-    def create_comment_model(self):
-        html_comments = Parser.get_comments(self.comments_link)
-
-        if html_comments is not None:
-            for comment in html_comments:
-                if comment.has_attr('data-replies') and comment.has_attr('data-author'):
-                    com = CommentContainer(comment, self.id)
-                    com.create_comment_model()
-
     def create_post_model(self):
         self.comments_link = "https://old." + self.comments_link
         session = PostContainer.startSession()
         try:
             if self.type is not "self.carporn":
-                user = session.query(fm.User).filter_by(username=self.author).first()
-                new_post = fm.Post(
+                user = session.query(User).filter_by(username=self.author).first()
+                new_post = Post.Post(
                     title=self.title,
                     link=self.url,
                     user=user,
