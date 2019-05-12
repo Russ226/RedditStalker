@@ -35,4 +35,19 @@ def get_reddit_posts(url):
     return posts
 
 
+def get_user_subreddit_posts(user = ""):
+    url = 'https://old.reddit.com/user/' + user
+
+    testUrl = "https://old.reddit.com/user/fox-mcleod"
+
+    r = requests.get(testUrl, headers=headers)
+
+    soup = BeautifulSoup(r.content, 'html.parser')
+
+    print(soup.findAll('a', {"class": "Post__subredditLink"})[0]["href"])
+
+    #get all subreddit on the pages and next page for at least 10 pages
+
+    #have a delay between a call to each page
+
 #span class = next button for next url

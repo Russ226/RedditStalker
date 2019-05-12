@@ -56,7 +56,7 @@ class PostContainer:
             except SQLAlchemyError as e:
                 print(e)
                 return None
-            # parallel task to parse user page
+            # parallel task to parse user page(have a delay between each call)
 
         session.close()
         return None
