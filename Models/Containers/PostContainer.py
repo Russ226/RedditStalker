@@ -35,9 +35,7 @@ class PostContainer:
         self.type = post['data-domain']
         self.url = post['data-url']
         # link to comments to determine if post exists in db...
-        self.comments_link = 'reddit.com' + \
-                             post.findAll('p', {'class', 'title'})[0].findAll('a', {'data-event-action', "title"})[0][
-                                 'href']
+        self.comments_link = post["data-permalink"]
         self.id = 0
 
     def create_user_model(self):
@@ -64,7 +62,6 @@ class PostContainer:
         return None
 
     def create_post_model(self):
-        self.comments_link = "https://old." + self.comments_link
         session = PostContainer.startSession()
         try:
             if self.type is not "self.carporn":

@@ -58,3 +58,6 @@ CREATE TABLE IF NOT EXISTS redditStalker.subredditsUsersJoin(
 	foreign key (subreddit_id) REFERENCES subreddits(id),
     PRIMARY KEY(id)
 );
+
+ALTER TABLE redditstalker.posts
+ADD commentLink varchar(255);

@@ -35,4 +35,4 @@ def get_reddit_posts(url):
     return posts
 
 
-
+#span class = next button for next url

@@ -12,6 +12,7 @@ class Post(User.Base):
     title = sqlalchemy.Column(sqlalchemy.String, nullable = False)
     link = sqlalchemy.Column(sqlalchemy.String, nullable = True)
     text_post = sqlalchemy.Column(sqlalchemy.String, nullable = True)
+    commentLink = sqlalchemy.Column(sqlalchemy.String, nullable = True)
     created_on = sqlalchemy.Column(sqlalchemy.DateTime, nullable = False)
     user = relationship("User")
 

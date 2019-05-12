@@ -16,8 +16,9 @@ def cleanPost(link):
 
 def main():
     posts = Parser.get_reddit_posts('https://old.reddit.com/r/the_donald/')
-
-    print(posts)
+    for post in posts:
+        print("data-url: " + post["data-url"])
+        print("permalink: " + post["data-permalink"])
 
 
 
