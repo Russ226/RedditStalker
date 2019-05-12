@@ -21,19 +21,19 @@ CREATE TABLE IF NOT EXISTS redditStalker.posts(
   foreign key (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE IF NOT EXISTS redditStalker.comments(
-  id INT NOT NULL AUTO_INCREMENT,
-  user_id INT NOT NULL,
-  post_id INT NOT NULL,
-  comment_id INT,
-  reply BIT NULL,
-  post TEXT,
-  created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY(id),
-  foreign key (user_id) REFERENCES users(id),
-  foreign key (post_id) REFERENCES posts(id),
-  foreign key (comment_id) REFERENCES comments(id)
-);
+#CREATE TABLE IF NOT EXISTS redditStalker.comments(
+  #id INT NOT NULL AUTO_INCREMENT,
+ # user_id INT NOT NULL,
+ # post_id INT NOT NULL,
+ # comment_id INT,
+ # reply BIT NULL,
+ # post TEXT,
+ # created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ # PRIMARY KEY(id),
+  #foreign key (user_id) REFERENCES users(id),
+  #foreign key (post_id) REFERENCES posts(id),
+  #foreign key (comment_id) REFERENCES comments(id)
+#);
 
 CREATE TABLE IF NOT EXISTS redditStalker.subreddits(
 	id INT NOT NULL AUTO_INCREMENT,
@@ -46,7 +46,8 @@ CREATE TABLE IF NOT EXISTS redditStalker.subredditsPostsJoin(
 	subreddit_id INT NOT NULL,
 	post_id INT NOT NULL,
 	foreign key (post_id) REFERENCES posts(id),
-	foreign key (subreddit_id) REFERENCES subreddits(id)
+	foreign key (subreddit_id) REFERENCES subreddits(id),
+    PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS redditStalker.subredditsUsersJoin(
@@ -54,5 +55,6 @@ CREATE TABLE IF NOT EXISTS redditStalker.subredditsUsersJoin(
 	subreddit_id INT NOT NULL,
 	user_id INT NOT NULL,
 	foreign key (user_id) REFERENCES users(id),
-	foreign key (subreddit_id) REFERENCES subreddits(id)
+	foreign key (subreddit_id) REFERENCES subreddits(id),
+    PRIMARY KEY(id)
 );

@@ -13,11 +13,13 @@
 # 		content
 # 	usernames of everyone to create entries in db
 
+# create parser for user pages to find where they post
+
 
 from bs4 import BeautifulSoup
 import requests
 
-url = 'https://old.reddit.com/r/carporn/'
+entryPointsubreddit = 'https://old.reddit.com/r/the_donald/'
 headers = {
     "user-agent": "ozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.149 Safari/537.36"
 }
@@ -33,15 +35,4 @@ def get_reddit_posts(url):
     return posts
 
 
-def get_comments(url):
-    r = requests.get(url, headers=headers)
 
-    soup = BeautifulSoup(r.content, 'html.parser')
-
-    comments = soup.findAll('div', {"class": "sitetable"})
-    if len(comments) > 0:
-        root_comments = comments[1].findAll('div', {"class": "thing"})
-
-        return root_comments
-
-    return None

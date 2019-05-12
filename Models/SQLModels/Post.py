@@ -1,4 +1,4 @@
-from . import User
+from Models.SQLModels import User
 import sqlalchemy
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -8,7 +8,7 @@ class Post(User.Base):
     __tablename__ = 'posts'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, nullable = False, primary_key=True)
-    user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(User.id))
+    user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(User.User.id))
     title = sqlalchemy.Column(sqlalchemy.String, nullable = False)
     link = sqlalchemy.Column(sqlalchemy.String, nullable = True)
     text_post = sqlalchemy.Column(sqlalchemy.String, nullable = True)
