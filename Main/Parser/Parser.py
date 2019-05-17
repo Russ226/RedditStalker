@@ -30,10 +30,10 @@ def get_reddit_posts(url):
 
     soup = BeautifulSoup(r.content, 'html.parser')
     # finds next page
-    #soup.find('span', {'class', 'next-button'})
+    nextPage = soup.find('span', {'class', 'next-button'}).find('a')['href']
     posts = soup.findAll('div', {"class": "thing"})
 
-    return posts
+    return posts, nextPage
 
 
 def get_user_subreddit_posts(user = ""):
@@ -45,8 +45,9 @@ def get_user_subreddit_posts(user = ""):
 
     soup = BeautifulSoup(r.content, 'html.parser')
 
-    print(soup.findAll('a', {"class": "Post__subredditLink"})[0]["href"])
-
+    # soup.findAll('a', {"class": "Post__subredditLink"})[0]["href"]
+    # next page for users
+    #soup.find('div', {'class', 'ListingPagination'}).find('a')['href']
     #get all subreddit on the pages and next page for at least 10 pages
 
     #have a delay between a call to each page

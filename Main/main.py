@@ -15,13 +15,15 @@ def cleanPost(link):
     return False
 
 def main():
-    # posts = Parser.get_reddit_posts('https://old.reddit.com/r/the_donald/')
-    # for post in posts:
-    #     print("data-url: " + post["data-url"])
-    #     print("permalink: " + post["data-permalink"])
+    posts, nextPage = Parser.get_reddit_posts('https://old.reddit.com/r/the_donald/')
 
-    # Parser.get_user_subreddit_posts()
-    print(Parser.get_reddit_posts('https://old.reddit.com/r/the_donald/').find('a')['href'])
+    ## create posts and users
+
+    ## sleep
+
+    ## go on to the next page(limit = 10)
+
+    print(Parser.get_user_subreddit_posts())
 
 
 def create_entries(postContainers):
