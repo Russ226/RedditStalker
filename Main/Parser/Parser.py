@@ -29,7 +29,8 @@ def get_reddit_posts(url):
     r = requests.get(url, headers=headers)
 
     soup = BeautifulSoup(r.content, 'html.parser')
-
+    # finds next page
+    #soup.find('span', {'class', 'next-button'})
     posts = soup.findAll('div', {"class": "thing"})
 
     return posts

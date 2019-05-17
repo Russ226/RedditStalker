@@ -20,8 +20,8 @@ def main():
     #     print("data-url: " + post["data-url"])
     #     print("permalink: " + post["data-permalink"])
 
-    Parser.get_user_subreddit_posts()
-
+    # Parser.get_user_subreddit_posts()
+    print(Parser.get_reddit_posts('https://old.reddit.com/r/the_donald/').find('a')['href'])
 
 
 def create_entries(postContainers):
