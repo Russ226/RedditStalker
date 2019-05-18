@@ -31,6 +31,7 @@ class PostContainer:
     def __init__(self, post):
 
         self.title = post.findAll('p', {'class', 'title'})[0].findAll('a')[0].text
+        self.subreddit = post['data-subreddit-prefixed']
         self.author = post['data-author']
         self.type = post['data-domain']
         self.url = post['data-url']
@@ -64,11 +65,13 @@ class PostContainer:
     def create_post_model(self):
         session = PostContainer.startSession()
         try:
-            if self.type is not "self.carporn":
+            #check if the post is unique
+            if self.comments_link is not session.query(Post).filter_by(commentLink = self.comments_link).first():
                 user = session.query(User).filter_by(username=self.author).first()
                 new_post = Post.Post(
                     title=self.title,
                     link=self.url,
+                    commentLink=self.comments_link,
                     user=user,
                     created_on = datetime.datetime.now()
                 )
