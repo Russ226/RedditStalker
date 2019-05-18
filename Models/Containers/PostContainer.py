@@ -4,6 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 import Models.SQLModels.User as User
 import Models.SQLModels.Post as Post
+import Models.SQLModels.Subreddit as Sub
 import Models.SQLModels.Subreddit as SR
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -76,6 +77,7 @@ class PostContainer:
                     created_on = datetime.datetime.now()
                 )
                 session.add(new_post)
+                self.insert_post_subreddit(new_post)
                 session.commit()
                 self.id = new_post.id
         except Exception:
@@ -83,6 +85,36 @@ class PostContainer:
 
         finally:
             session.close()
+
+    def insert_post_subreddit(self, post):
+        session = PostContainer.startSession()
+
+        subreddit = session.query(Sub.Subreddit).filter_by(name = self.subreddit).first()
+
+        if subreddit != None:
+            new_link = Sub.SubredditPostJoin(
+                post = post,
+                subreddit = subreddit
+            )
+
+            session.add(new_link)
+            session.commit()
+
+        else:
+            new_subreddit = Sub.Subreddit(
+                name = self.subreddit
+
+            )
+
+            new_link = Sub.SubredditPostJoin(
+                post=post,
+                subreddit=subreddit
+            )
+
+            session.add(new_subreddit)
+            session.add(new_link)
+            session.commit()
+
 
     def __repr__(self):
         return "<Post(id_counter = %s, author = %s, title= %s, url = %s, type = %s, comments_link= %s)>" % (
