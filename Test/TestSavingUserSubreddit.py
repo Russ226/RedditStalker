@@ -28,6 +28,9 @@ class testUserSubreddit(unittest.TestCase):
         session.add(new_user)
         session.commit()
 
+    def testSubredditDoesntExist(self):
+        pass
+
     def tearDown(self):
         session = testUserSubreddit.startSession()
         deleteUser = session.query(User.User).filter_by(username = "bobtest").first()
