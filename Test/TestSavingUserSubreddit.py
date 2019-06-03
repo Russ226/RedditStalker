@@ -2,6 +2,7 @@ import unittest
 import datetime
 import Models.SQLModels.User as User
 import Models.SQLModels.Subreddit as sub
+import Models.Containers.UserContainer as UserContainer
 from sqlalchemy import create_engine
 from sqlalchemy import and_
 from sqlalchemy.orm import sessionmaker
@@ -10,6 +11,7 @@ import Models.SQLModels.Subreddit as Sub
 
 
 class testUserSubreddit(unittest.TestCase):
+
     @staticmethod
     def startSession():
         engine = create_engine('mysql+pymysql://root:Pen1992@@localhost/redditStalker?charset=utf8', encoding='utf-8')
@@ -19,17 +21,19 @@ class testUserSubreddit(unittest.TestCase):
 
     def setUp(self):
         session = testUserSubreddit.startSession()
-        new_user = User.User(
+        self.new_user = User.User(
             username="bobtest",
             email= 'bobtest@email.com',
             password='123456',
             created_on=datetime.datetime.now()
         )
-        session.add(new_user)
+        session.add(self.new_user)
         session.commit()
 
     def testSubredditDoesntExist(self):
-        pass
+        subreddits = ['gaming', 'news', 'bobsplace']
+        usercon = UserContainer.UserContainer(self.new_user)
+        usercon.insertSubreddit(subreddits)
 
     def tearDown(self):
         session = testUserSubreddit.startSession()

@@ -36,8 +36,7 @@ def get_reddit_posts(url):
     return posts, nextPage
 
 
-def get_user_subreddit_posts(user = ""):
-    url = 'https://old.reddit.com/user/' + user
+def get_user_subreddit_posts(userLink):
 
     testUrl = "https://old.reddit.com/user/fox-mcleod"
 

@@ -2,7 +2,7 @@
 import datetime
 
 from sqlalchemy.exc import SQLAlchemyError
-
+import Main.Parser.Parser as Parser
 import Models.SQLModels.User as User
 import Models.SQLModels.Subreddit as Sub
 import Models.SQLModels.Subreddit as SR
@@ -24,37 +24,44 @@ class UserContainer:
         self.userPageLink = 'https://old.reddit.com/user/' + user.username
 
 
-    def insertSubreddit(self, subredditName):
+    def parseUserPage(self):
+        subreddits, nextPage = Parser.get_user_subreddit_posts(self.userLink)
+        for n in range(0,10):
+            self.insertSubreddit(subreddits)
+            subreddits, nextPage = Parser.get_user_subreddit_posts(nextPage)
+
+
+    def insertSubreddit(self, subredditNames):
         session = UserContainer.startSession()
+        for subredditName in subredditNames:
+            #check if subreddit entry exists
+            checkSubreddit = session.query(Sub.Subreddit).filter_by(name = subredditName).first()
 
-        #check if subreddit entry exists
-        checkSubreddit = session.query(Sub.Subreddit).filter_by(name = subredditName).first()
+            # link user and subreddit
+            if checkSubreddit != None:
+                new_subreddit = Sub.Subreddit(
+                    name = subredditName
+                )
+                session.add(new_subreddit)
 
-        # link user and subreddit
-        if checkSubreddit != None:
-            new_subreddit =  Sub.Subreddit(
-                name = subredditName
-            )
-            session.add(new_subreddit)
+                new_subreddit_user = Sub.SubredditUserJoin(
+                    user = self.user,
+                    subredditName = new_subreddit
 
-            new_subreddit_user = Sub.SubredditUserJoin(
-                user = self.user,
-                subredditName = new_subreddit
+                )
 
-            )
+                session.add(new_subreddit_user)
+                session.commit()
+            else:
 
-            session.add(new_subreddit_user)
-            session.commit()
-        else:
+                new_subreddit_user = Sub.SubredditUserJoin(
+                    user=self.user,
+                    subredditName=checkSubreddit
 
-            new_subreddit_user = Sub.SubredditUserJoin(
-                user=self.user,
-                subredditName=checkSubreddit
+                )
 
-            )
-
-            session.add(new_subreddit_user)
-            session.commit()
+                session.add(new_subreddit_user)
+                session.commit()
 
 
     def run(self):
