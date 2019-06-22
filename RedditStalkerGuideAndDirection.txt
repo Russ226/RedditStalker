@@ -1,0 +1,59 @@
+guidelines for myself and direction of project
+
+reddit stalker 
+Step Gather Data 1:
+	- parse the first 10 page of the donald 
+		- inserts the users and posts + subreddit info(user+subreddit, post+subreddit)
+	- parses the users page also about 10 pages
+		- inserts following info:
+			- which subreddit they posted in(table subrredit + user) each time that subredit comes up
+			- adds list of subreddits (table subreddits)
+			- seprate post from comment
+				- posts and comments are seperated in the div tag data-type attr(post== link, comment== comment)
+			
+
+
+
+tables needed:
+	users:
+		- id
+		- name 	
+
+	posts:
+		- id
+ 		- user_id
+		- link
+		- title
+		- created_on
+
+	comments:
+		- id
+ 		- user_id
+		- content(must be able to handle large walls of text)
+		- created_on
+
+	subreddit:
+		- id
+		- name
+	
+	subredditPostJoin:
+		- id
+		- subreddit_id
+		- post_id
+		- subreddit_name
+	
+	subredditUserJoin:
+		- id
+		- subreddit_id
+		- user_id
+		- subreddit_name
+		- username
+
+	subredditCommentJoin:
+		- id
+		- subreddit_id
+		- comment_id
+		- subreddit_name
+		
+	
+		
