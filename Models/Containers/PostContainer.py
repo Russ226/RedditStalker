@@ -66,13 +66,12 @@ class PostContainer:
     def create_post_model(self):
         session = PostContainer.startSession()
         try:
-            #check if the post is unique
+            #title will check for uniqueness
             if self.comments_link is not session.query(Post).filter_by(commentLink = self.comments_link).first():
                 user = session.query(User).filter_by(username=self.author).first()
                 new_post = Post.Post(
                     title=self.title,
                     link=self.url,
-                    commentLink=self.comments_link,
                     user=user,
                     created_on = datetime.datetime.now()
                 )
@@ -103,7 +102,6 @@ class PostContainer:
         else:
             new_subreddit = Sub.Subreddit(
                 name = self.subreddit
-
             )
 
             new_link = Sub.SubredditPostJoin(
