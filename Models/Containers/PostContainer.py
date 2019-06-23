@@ -32,7 +32,7 @@ class PostContainer:
     def __init__(self, post):
 
         self.title = post.findAll('p', {'class', 'title'})[0].findAll('a')[0].text
-        self.subreddit = post['data-subreddit-prefixed']
+        self.subreddit = post['data-subreddit']
         self.author = post['data-author']
         self.type = post['data-domain']
         self.url = post['data-url']

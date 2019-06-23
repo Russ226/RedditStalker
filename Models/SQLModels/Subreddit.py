@@ -1,4 +1,4 @@
-from Models.SQLModels import User, Post
+from Models.SQLModels import User, Post, Comment
 import sqlalchemy
 from sqlalchemy.orm import relationship
 
@@ -20,6 +20,7 @@ class SubredditPostJoin(User.Base):
     id = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, primary_key=True)
     post_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(Post.Post.id), nullable=False)
     subreddit_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(Subreddit.id), nullable=False)
+    subreddit_name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     post = relationship("Post")
     subreddit = relationship("Subreddit")
 
@@ -32,8 +33,22 @@ class SubredditUserJoin(User.Base):
     id = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, primary_key=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(User.User.id), nullable=False)
     subreddit_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(Subreddit.id), nullable=False)
+    subreddit_name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     user = relationship("User")
     subreddit = relationship("Subreddit")
 
     def __repr__(self):
         return "<Post(id = %d, user_id = %d, , subreddit_id = %d)>" % (self.id, self.user_id, self.subreddit_id)
+
+class SubredditCommentJoin(User.Base):
+    __tablename__ = "subredditscommentsJoin"
+
+    id = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, primary_key=True)
+    comment_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(Comment.Comment.id), nullable=False)
+    subreddit_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(Subreddit.id), nullable=False)
+    subreddit_name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    Comment = relationship("comment")
+    subreddit = relationship("Subreddit")
+
+    def __repr__(self):
+        return "<Post(id = %d, comment_id = %d, , subreddit_id = %d)>" % (self.id, self.comment_id, self.subreddit_id)

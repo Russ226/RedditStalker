@@ -25,10 +25,16 @@ headers = {
 }
 
 
-def get_reddit_posts(url):
+def get_soup_obj(url):
     r = requests.get(url, headers=headers)
 
     soup = BeautifulSoup(r.content, 'html.parser')
+
+    return soup
+
+
+def get_reddit_posts(soup):
+
     # finds next page
     nextPage = soup.find('span', {'class', 'next-button'}).find('a')['href']
     posts = soup.findAll('div', {"class": "thing"})
@@ -36,13 +42,9 @@ def get_reddit_posts(url):
     return posts, nextPage
 
 
-def get_user_subreddit_posts(userLink):
+def get_user_subreddit_posts(soup):
 
-    testUrl = "https://old.reddit.com/user/fox-mcleod"
 
-    r = requests.get(testUrl, headers=headers)
-
-    soup = BeautifulSoup(r.content, 'html.parser')
 
     #use [index]['href']
     subreddit = soup.findAll('a', {"class": "Post__subredditLink"})

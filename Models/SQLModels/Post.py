@@ -15,5 +15,5 @@ class Post(User.Base):
     user = relationship("User")
 
     def __repr__(self):
-        return "<Post(id = %d, user_id = %d, title= %s, link = %s, text_post = %s, created_on = %s)>" % (self.id, self.user_id, self.title, self.link, self.text_post)
+        return "<Post(id = %d, user_id = %d, title= %s, link = %s, created_on = %s)>" % (self.id, self.user_id, self.title, self.link, self.created_on)
 
