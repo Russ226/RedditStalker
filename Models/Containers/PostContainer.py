@@ -39,11 +39,15 @@ class PostContainer:
         # link to comments to determine if post exists in db...
         self.comments_link = post["data-permalink"]
         self.id = 0
+        #only set it to post after commiting it to db
+        self.post = None
+        self.user = None
 
     def create_user_model(self):
         session = PostContainer.startSession()
 
         user = session.query(User).filter_by(username=self.author).first()
+        self.user = user
 
         if user is None:
             try:
@@ -55,6 +59,7 @@ class PostContainer:
                 )
                 session.add(new_user)
                 session.commit()
+                self.user = new_user
             except SQLAlchemyError as e:
                 print(e)
                 return None
@@ -67,32 +72,31 @@ class PostContainer:
         session = PostContainer.startSession()
         try:
             #title will check for uniqueness
-            if self.comments_link is not session.query(Post).filter_by(commentLink = self.comments_link).first():
-                user = session.query(User).filter_by(username=self.author).first()
+            if session.query(Post).filter_by(title = self.title).first() is not None:
                 new_post = Post.Post(
                     title=self.title,
                     link=self.url,
-                    user=user,
+                    user=self.user,
                     created_on = datetime.datetime.now()
                 )
                 session.add(new_post)
                 self.insert_post_subreddit(new_post)
                 session.commit()
-                self.id = new_post.id
+                self.post = new_post
         except Exception:
             pass
 
         finally:
             session.close()
 
-    def insert_post_subreddit(self, post):
+    def insert_post_subreddit(self):
         session = PostContainer.startSession()
 
         subreddit = session.query(Sub.Subreddit).filter_by(name = self.subreddit).first()
 
         if subreddit != None:
             new_link = Sub.SubredditPostJoin(
-                post = post,
+                post = self.new_post,
                 subreddit = subreddit
             )
 
@@ -105,7 +109,7 @@ class PostContainer:
             )
 
             new_link = Sub.SubredditPostJoin(
-                post=post,
+                post=self.new_post,
                 subreddit=subreddit
             )
 
