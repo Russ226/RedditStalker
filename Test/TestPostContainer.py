@@ -17,7 +17,6 @@ import Models.SQLModels.Subreddit as Sub
 
 
 class testUserSubreddit(unittest.TestCase):
-
     @staticmethod
     def startSession():
         engine = create_engine('mysql+pymysql://root:Pen1992@@localhost/redditStalker?charset=utf8', encoding='utf-8')
@@ -25,9 +24,15 @@ class testUserSubreddit(unittest.TestCase):
         session = session_maker()
         return session
 
+    def nextPage(self, link):
+        file = open(link, 'r')
+        soup = BeautifulSoup(file.read(), 'html.parser')
+        file.close()
+
+        return soup
+
     # read from html doc
     def setUp(self):
-        script_dir = os.path.dirname(__file__)
         file = open('TestHTMLFiles/TestPostContainerHTML/TestPostContainer1.html', 'r')
         self.soup = BeautifulSoup(file.read(), 'html.parser')
         file.close()
@@ -45,7 +50,15 @@ class testUserSubreddit(unittest.TestCase):
             assert title, 'The people that Ice will apprehend have already been ordered to be deported. This means that they have run from the law and run from the courts. These are people that are supposed to go back to their home country. They broke the law by coming into the country, &amp; now by staying.'
 
     def SavingPosts(self):
-        pass
+        posts, nextPage = Parser.get_reddit_posts(self.soup)
+        counter = 0
+
+        while(counter < 2):
+            
+
+            counter += 1
+
+
 
     def tearDown(self):
         #delete all new entries to db
