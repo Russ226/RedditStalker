@@ -47,7 +47,7 @@ class SubredditCommentJoin(User.Base):
     comment_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(Comment.Comment.id), nullable=False)
     subreddit_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey(Subreddit.id), nullable=False)
     subreddit_name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    Comment = relationship("comment")
+    Comment = relationship("Comment")
     subreddit = relationship("Subreddit")
 
     def __repr__(self):

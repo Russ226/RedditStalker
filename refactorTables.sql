@@ -37,5 +37,17 @@ CREATE TABLE IF NOT EXISTS redditStalker.subredditscomementsJoin(
     PRIMARY KEY(id)
 );
 
+ALTER TABLE `redditstalker`.`subredditscomementsjoin` 
+RENAME TO  `redditstalker`.`subredditscommentsjoin` ;
+
+
 ALTER TABLE redditstalker.subredditscommentsJoin
-ADD COLUMN subbredit_name varchar(100) NOT NULL AFTER comment_id;
+ADD COLUMN subreddit_name varchar(100) NOT NULL AFTER comment_id;
+
+
+ALTER TABLE redditstalker.subredditsPostsJoin
+CHANGE COLUMN subbredit_name subreddit_name VARCHAR(100) NOT NULL;
+
+ALTER TABLE redditstalker.subredditsUsersJoin
+CHANGE COLUMN subbredit_name subreddit_name VARCHAR(100) NOT NULL;
+

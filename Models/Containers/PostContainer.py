@@ -1,7 +1,7 @@
 import datetime
 
 from sqlalchemy.exc import SQLAlchemyError
-
+import logging
 import Models.SQLModels.User as User
 import Models.SQLModels.Post as Post
 import Models.SQLModels.Subreddit as Sub
@@ -46,22 +46,21 @@ class PostContainer:
     def create_user_model(self):
         session = PostContainer.startSession()
 
-        user = session.query(User).filter_by(username=self.author).first()
+        user = session.query(User.User).filter_by(username=self.author).first()
         self.user = user
 
         if user is None:
             try:
                 new_user = User.User(
                     username=self.author,
-                    email=self.author + '@email.com',
-                    password='123456',
                     created_on = datetime.datetime.now()
                 )
                 session.add(new_user)
                 session.commit()
+                session.flush()
                 self.user = new_user
             except SQLAlchemyError as e:
-                print(e)
+                logging.exception(e)
                 return None
             # parallel task to parse user page(have a delay between each call)
 
@@ -72,19 +71,19 @@ class PostContainer:
         session = PostContainer.startSession()
         try:
             #title will check for uniqueness
-            if session.query(Post).filter_by(title = self.title).first() is not None:
+            if not self.checkDuplicatePost():
                 new_post = Post.Post(
-                    title=self.title,
+                    title=self.title.strip(),
                     link=self.url,
                     user=self.user,
                     created_on = datetime.datetime.now()
                 )
                 session.add(new_post)
-                self.insert_post_subreddit(new_post)
                 session.commit()
+                session.flush()
                 self.post = new_post
-        except Exception:
-            pass
+        except Exception as e:
+            logging.exception(e)
 
         finally:
             session.close()
@@ -96,8 +95,10 @@ class PostContainer:
 
         if subreddit != None:
             new_link = Sub.SubredditPostJoin(
-                post = self.new_post,
-                subreddit = subreddit
+                post = self.post,
+                subreddit = subreddit,
+                subreddit_name=self.subreddit
+
             )
 
             session.add(new_link)
@@ -107,16 +108,34 @@ class PostContainer:
             new_subreddit = Sub.Subreddit(
                 name = self.subreddit
             )
+            session.add(new_subreddit)
+            session.commit()
+            session.flush()
 
             new_link = Sub.SubredditPostJoin(
-                post=self.new_post,
-                subreddit=subreddit
+                post=self.post,
+                subreddit=subreddit,
+                subreddit_name = self.subreddit
             )
 
-            session.add(new_subreddit)
+
             session.add(new_link)
             session.commit()
+            session.close()
 
+
+    # checks if there a post in the db with the same title created by the same user and posted in the same subreddit
+    # other wise its probably a crosspost or repost
+    def checkDuplicatePost(self):
+        session = PostContainer.startSession()
+        dupPost = session.query(Post.Post).filter_by(title = self.title).first()
+
+        if dupPost is not None and dupPost.user.username is self.author:
+            checkSubReddit = session.query(Sub.SubredditPostJoin).filter_by(post_id = dupPost.id).first()
+            if checkSubReddit is not None:
+                return True
+
+        return False
 
     def __repr__(self):
         return "<Post(id_counter = %s, author = %s, title= %s, url = %s, type = %s, comments_link= %s)>" % (

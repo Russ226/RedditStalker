@@ -59,9 +59,13 @@ tables needed:
 post container todo:
 	- create test files
 		- include posts from r/the_donald
-		- inlcude next page link and next page test file
+		- inlcude next page link and next page test file(so for 2 files with 3 posts)
 
 	- maybe look up mocking sqlalchemy for testing
+
+	- work on turning PostContainer class into its own thread runner....
+		- shared resources and ideas on how to safely access and use them:
+			-
 		
 	
 		

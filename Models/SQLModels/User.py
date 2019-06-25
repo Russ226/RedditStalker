@@ -6,9 +6,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'
     id = sqlalchemy.Column(sqlalchemy.Integer, nullable = False, primary_key=True)
-    email = sqlalchemy.Column(sqlalchemy.String, nullable = False)
     username = sqlalchemy.Column(sqlalchemy.String, nullable = False)
-    password = sqlalchemy.Column(sqlalchemy.String, nullable = True)
     created_on = sqlalchemy.Column(sqlalchemy.DateTime, nullable = False)
 
     def __repr__(self):
