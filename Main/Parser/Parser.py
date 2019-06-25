@@ -36,8 +36,12 @@ def get_soup_obj(url):
 def get_reddit_posts(soup):
 
     # finds next page
-    nextPage = soup.find('span', {'class', 'next-button'}).find('a')['href']
+    nextPage = soup.find('span', {'class', 'next-button'})
+    if nextPage is not None:
+        nextPage = nextPage.find('a')['href']
+
     posts = soup.findAll('div', {"class": "thing"})
+
 
     return posts, nextPage
 

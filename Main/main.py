@@ -15,7 +15,8 @@ def cleanPost(link):
     return False
 
 def main():
-    posts, nextPage = Parser.get_reddit_posts('https://old.reddit.com/r/the_donald/')
+    soup = Parser.get_soup_obj('https://old.reddit.com/r/the_donald/')
+    posts, nextPage = Parser.get_reddit_posts(soup)
 
     ## create posts and users
 
@@ -23,7 +24,7 @@ def main():
 
     ## go on to the next page(limit = 10)
 
-    print(Parser.get_user_subreddit_posts())
+    print(nextPage)
 
 
 def create_entries(postContainers):

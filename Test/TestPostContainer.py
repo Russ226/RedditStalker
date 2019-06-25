@@ -52,19 +52,6 @@ class testUserSubreddit(unittest.TestCase):
             assert title, 'The people that Ice will apprehend have already been ordered to be deported. This means that they have run from the law and run from the courts. These are people that are supposed to go back to their home country. They broke the law by coming into the country, &amp; now by staying.'
 
 
-    def testPostParserMultiplePages(self):
-        # create bs var and pass to parse post function in parser file
-        posts, nextPage = Parser.get_reddit_posts(self.soup)
-
-        for post in posts:
-            title = post.findAll('p', {'class', 'title'})[0].findAll('a')[0].text
-            subreddit = post['data-subreddit']
-            author = post['data-author']
-            assert author, 'IjustLikeToShitPost'
-            assert subreddit, 'The_Donald'
-            assert title, 'The people that Ice will apprehend have already been ordered to be deported. This means that they have run from the law and run from the courts. These are people that are supposed to go back to their home country. They broke the law by coming into the country, &amp; now by staying.'
-
-
     def testSavingPosts(self):
         posts, nextPage = Parser.get_reddit_posts(self.soup)
         counter = 0
@@ -76,8 +63,9 @@ class testUserSubreddit(unittest.TestCase):
                 newPost.create_post_model()
                 newPost.insert_post_subreddit()
 
-            soup =  self.nextPage(nextPage)
-            posts, nextPage = Parser.get_reddit_posts(self.soup)
+            if nextPage is not None:
+                soup = self.nextPage(nextPage)
+                posts, nextPage = Parser.get_reddit_posts(soup)
 
             counter += 1
 
@@ -86,7 +74,7 @@ class testUserSubreddit(unittest.TestCase):
 
         #check if info was saved correctly
 
-        assert session.query(Sub.Subreddit).filter_by(name = "The_Donald").count() , 1
+        assert session.query(Sub.Subreddit).filter_by(name = "The_Donald").count(), 1
 
         #checking for users
         assert session.query(User.User).filter_by(username = "IjustLikeToShitPost").first().username, self.testData[0]["username"]
@@ -94,8 +82,8 @@ class testUserSubreddit(unittest.TestCase):
         assert session.query(User.User).filter_by(username = "KeepMarxInTheGround").first().username, self.testData[2]["username"]
 
         #checking the posts
-        assert session.query(Post.Post).filter_by(username="Little Ben Shapiro").first().username, self.testData[1]["title"]
-        assert session.query(Post.Post).filter_by(username="KeepMarxInTheGround").first().username, self.testData[2][ "title"]
+        assert session.query(Post.Post).filter_by(title="Antifa").first().title, self.testData[1]["title"]
+        assert session.query(Post.Post).filter_by(title="Little Ben Shapiro").first().title, self.testData[2][ "title"]
 
         session.close()
 
