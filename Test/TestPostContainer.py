@@ -44,12 +44,12 @@ class testPostContainer(unittest.TestCase):
         posts, nextPage = Parser.get_reddit_posts(self.soup)
 
         for post in posts:
-            title = post.findAll('p', {'class', 'title'})[0].findAll('a')[0].text
+            title = post.findAll('p', {'class', 'title'})[0].findAll('a')[0].text.strip()
             subreddit = post['data-subreddit']
             author = post['data-author']
             self.assertEqual(author, 'IjustLikeToShitPost')
             self.assertEqual(subreddit, 'The_Donald')
-            self.assertEqual(title, 'The people that Ice will apprehend have already been ordered to be deported. This means that they have run from the law and run from the courts. These are people that are supposed to go back to their home country. They broke the law by coming into the country, &amp; now by staying.')
+            self.assertEqual(title, 'The people that Ice will apprehend have already been ordered to be deported. This means that they have run from the law and run from the courts. These are people that are supposed to go back to their home country. They broke the law by coming into the country, & now by staying.')
 
 
     def testSavingPosts(self):
@@ -76,14 +76,14 @@ class testPostContainer(unittest.TestCase):
 
         self.assertEqual(session.query(Sub.Subreddit).filter_by(name = "The_Donald").count(), 1)
 
-        #checking for users
-        self.assertEqual(session.query(User.User).filter_by(username = "IjustLikeToShitPost").first().username, self.testData[0]["username"])
-        self.assertEqual(session.query(User.User).filter_by(username = "Lovinnit").first().username, self.testData[1]["username"])
-        self.assertEqual(session.query(User.User).filter_by(username = "KeepMarxInTheGround").first().username, self.testData[2]["username"])
-
-        #checking the posts
-        self.assertEqual(session.query(Post.Post).filter_by(title="Antifa").first().title, self.testData[1]["title"])
-        self.assertEqual(session.query(Post.Post).filter_by(title="Little Ben Shapiro").first().title, self.testData[2][ "title"])
+        # #checking for users
+        self.assertEqual(session.query(User.User).filter_by(username = "IjustLikeToShitPost").first().username, self.testData['data'][0]["username"])
+        self.assertEqual(session.query(User.User).filter_by(username = "Lovinnit").first().username, self.testData['data'][1]["username"])
+        self.assertEqual(session.query(User.User).filter_by(username = "KeepMarxInTheGround").first().username, self.testData['data'][2]["username"])
+        #
+        # #checking the posts
+        self.assertEqual(session.query(Post.Post).filter_by(title="Antifa").first().title, self.testData['data'][1]["title"])
+        self.assertEqual(session.query(Post.Post).filter_by(title="Little Ben Shapiro").first().title, self.testData['data'][2]["title"])
 
         session.close()
 

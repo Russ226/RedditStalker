@@ -25,7 +25,7 @@ class PostContainer:
     @staticmethod
     def startSession():
         engine = create_engine('mysql+pymysql://root:Pen1992@@localhost/redditStalker?charset=utf8', encoding='utf-8')
-        session_maker = sessionmaker(bind=engine)
+        session_maker = sessionmaker(bind=engine,expire_on_commit=False)
         session = session_maker()
         return session
 
@@ -86,42 +86,44 @@ class PostContainer:
             logging.exception(e)
 
         finally:
+
             session.close()
 
     def insert_post_subreddit(self):
-        session = PostContainer.startSession()
 
-        subreddit = session.query(Sub.Subreddit).filter_by(name = self.subreddit).first()
+        if self.post is not None and self.post.id is not None:
+            session = PostContainer.startSession()
+            subreddit = session.query(Sub.Subreddit).filter_by(name=self.subreddit).first()
 
-        if subreddit != None:
-            new_link = Sub.SubredditPostJoin(
-                post = self.post,
-                subreddit = subreddit,
-                subreddit_name=self.subreddit
+            if subreddit != None:
+                new_link = Sub.SubredditPostJoin(
+                    post = self.post,
+                    subreddit = subreddit,
+                    subreddit_name=self.subreddit
 
-            )
+                )
 
-            session.add(new_link)
-            session.commit()
+                session.add(new_link)
+                session.commit()
 
-        else:
-            new_subreddit = Sub.Subreddit(
-                name = self.subreddit
-            )
-            session.add(new_subreddit)
-            session.commit()
-            session.flush()
+            else:
+                new_subreddit = Sub.Subreddit(
+                    name = self.subreddit
+                )
+                session.add(new_subreddit)
+                session.commit()
+                session.flush()
 
-            new_link = Sub.SubredditPostJoin(
-                post=self.post,
-                subreddit=subreddit,
-                subreddit_name = self.subreddit
-            )
+                new_link = Sub.SubredditPostJoin(
+                    post=self.post,
+                    subreddit=subreddit,
+                    subreddit_name = self.subreddit
+                )
 
 
-            session.add(new_link)
-            session.commit()
-            session.close()
+                session.add(new_link)
+                session.commit()
+                session.close()
 
 
 
@@ -132,11 +134,13 @@ class PostContainer:
         session = PostContainer.startSession()
         dupPost = session.query(Post.Post).filter_by(title = self.title).first()
 
-        if dupPost is not None and dupPost.user.username is self.author:
+        if dupPost is not None and dupPost.user.username == self.author:
             checkSubReddit = session.query(Sub.SubredditPostJoin).filter_by(post_id = dupPost.id).first()
             if checkSubReddit is not None:
+                session.close()
                 return True
 
+        session.close()
         return False
 
     def __repr__(self):
