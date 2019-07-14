@@ -124,6 +124,8 @@ class PostContainer:
             session.close()
 
 
+
+
     # checks if there a post in the db with the same title created by the same user and posted in the same subreddit
     # other wise its probably a crosspost or repost
     def checkDuplicatePost(self):

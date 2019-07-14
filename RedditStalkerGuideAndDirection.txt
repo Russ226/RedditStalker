@@ -65,6 +65,8 @@ post container todo:
 
 	- work on turning PostContainer class into its own thread runner....
 		- shared resources and ideas on how to safely access and use them:
+
+	- test duplicate posts inserts
 			-
 		
 	

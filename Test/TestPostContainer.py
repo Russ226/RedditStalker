@@ -14,7 +14,7 @@ from sqlalchemy.orm import sessionmaker
 from Models.Containers.PostContainer import PostContainer
 
 
-class testUserSubreddit(unittest.TestCase):
+class testPostContainer(unittest.TestCase):
 
     def startSession(self):
         engine = create_engine('mysql+pymysql://root:Pen1992@@localhost/redditStalker?charset=utf8', encoding='utf-8')
@@ -47,9 +47,9 @@ class testUserSubreddit(unittest.TestCase):
             title = post.findAll('p', {'class', 'title'})[0].findAll('a')[0].text
             subreddit = post['data-subreddit']
             author = post['data-author']
-            assert author, 'IjustLikeToShitPost'
-            assert subreddit, 'The_Donald'
-            assert title, 'The people that Ice will apprehend have already been ordered to be deported. This means that they have run from the law and run from the courts. These are people that are supposed to go back to their home country. They broke the law by coming into the country, &amp; now by staying.'
+            self.assertEqual(author, 'IjustLikeToShitPost')
+            self.assertEqual(subreddit, 'The_Donald')
+            self.assertEqual(title, 'The people that Ice will apprehend have already been ordered to be deported. This means that they have run from the law and run from the courts. These are people that are supposed to go back to their home country. They broke the law by coming into the country, &amp; now by staying.')
 
 
     def testSavingPosts(self):
@@ -74,19 +74,39 @@ class testUserSubreddit(unittest.TestCase):
 
         #check if info was saved correctly
 
-        assert session.query(Sub.Subreddit).filter_by(name = "The_Donald").count(), 1
+        self.assertEqual(session.query(Sub.Subreddit).filter_by(name = "The_Donald").count(), 1)
 
         #checking for users
-        assert session.query(User.User).filter_by(username = "IjustLikeToShitPost").first().username, self.testData[0]["username"]
-        assert session.query(User.User).filter_by(username = "Lovinnit").first().username, self.testData[1]["username"]
-        assert session.query(User.User).filter_by(username = "KeepMarxInTheGround").first().username, self.testData[2]["username"]
+        self.assertEqual(session.query(User.User).filter_by(username = "IjustLikeToShitPost").first().username, self.testData[0]["username"])
+        self.assertEqual(session.query(User.User).filter_by(username = "Lovinnit").first().username, self.testData[1]["username"])
+        self.assertEqual(session.query(User.User).filter_by(username = "KeepMarxInTheGround").first().username, self.testData[2]["username"])
 
         #checking the posts
-        assert session.query(Post.Post).filter_by(title="Antifa").first().title, self.testData[1]["title"]
-        assert session.query(Post.Post).filter_by(title="Little Ben Shapiro").first().title, self.testData[2][ "title"]
+        self.assertEqual(session.query(Post.Post).filter_by(title="Antifa").first().title, self.testData[1]["title"])
+        self.assertEqual(session.query(Post.Post).filter_by(title="Little Ben Shapiro").first().title, self.testData[2][ "title"])
 
         session.close()
+
+
+    def testDuplicatePosts(self):
+        soup = self.nextPage('TestHTMLFiles/TestPostContainerHTML/TestDuplicatePosts.html')
+        posts, nextPage = Parser.get_reddit_posts(soup)
+
+        for post in posts:
+            newPost = PostContainer(post)
+            newPost.create_user_model()
+            newPost.create_post_model()
+            newPost.insert_post_subreddit()
+
+        session = self.startSession()
+
+        self.assertEqual(session.query(Post.Post).filter_by(title="Antifa").count(), 1)
+
+        session.close()
+
 
     def tearDown(self):
         pass
 
+if __name__ == '__main__':
+    testPostContainer.main()
