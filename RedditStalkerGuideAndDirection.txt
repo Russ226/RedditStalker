@@ -69,6 +69,7 @@ post container todo:
 	- test duplicate posts inserts
 
 Create a Repo layer for users and Posts to reduce code copying
+	- putting this on hold for now
 			-
 		
 	
