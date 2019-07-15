@@ -10,5 +10,5 @@ class User(Base):
     created_on = sqlalchemy.Column(sqlalchemy.DateTime, nullable = False)
 
     def __repr__(self):
-        return "<Post(id = %d, email = %s, username = %s)>" % (self.id, self.email, self.username)
+        return "<Post(id = %d, username = %s)>" % (self.id, self.username)
 

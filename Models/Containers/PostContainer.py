@@ -5,27 +5,16 @@ import logging
 import Models.SQLModels.User as User
 import Models.SQLModels.Post as Post
 import Models.SQLModels.Subreddit as Sub
-import Models.SQLModels.Subreddit as SR
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-
-# for now hard coding to carporn will change later
-# # data-domain = {self.carporn, i.reddit???}
-
-# refactoring objectives
-#     change connection string
-#     change the way posts are being stored(i only want the link to the post now)
-#     get rid of anything to do with comments
-#     set up a call for parsing user page(reddit.com/user/username)
-#         methods and storage relating to user page parsing going be in another file
 
 class PostContainer:
 
     @staticmethod
     def startSession():
         engine = create_engine('mysql+pymysql://root:Pen1992@@localhost/redditStalker?charset=utf8', encoding='utf-8')
-        session_maker = sessionmaker(bind=engine,expire_on_commit=False)
+        session_maker = sessionmaker(bind=engine, expire_on_commit=False)
         session = session_maker()
         return session
 
@@ -143,6 +132,3 @@ class PostContainer:
         session.close()
         return False
 
-    def __repr__(self):
-        return "<Post(id_counter = %s, author = %s, title= %s, url = %s, type = %s, comments_link= %s)>" % (
-            PostContainer.id_counter, self.author, self.title, self.url, self.type, self.comments_link)

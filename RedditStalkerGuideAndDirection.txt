@@ -67,6 +67,8 @@ post container todo:
 		- shared resources and ideas on how to safely access and use them:
 
 	- test duplicate posts inserts
+
+Create a Repo layer for users and Posts to reduce code copying
 			-
 		
 	
