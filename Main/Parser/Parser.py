@@ -47,16 +47,13 @@ def get_reddit_posts(soup):
 
 
 def get_user_subreddit_posts(soup):
-
-
-
-    #use [index]['href']
-    subreddit = soup.findAll('a', {"class": "Post__subredditLink"})
+    # user posts and comments
+    userStuff = soup.findAll('div', {"class": "thing"})
     # next page for users
     nextPage = soup.find('div', {'class', 'ListingPagination'}).findAll('a')['href']
     #get all subreddit on the pages and next page for at least 10 pages
 
-    return subreddit, nextPage
+    return userStuff, nextPage
 
     #have a delay between a call to each page
 

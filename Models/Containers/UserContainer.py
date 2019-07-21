@@ -1,6 +1,6 @@
 #for collecting info from user pages
 import datetime
-
+import logging
 from sqlalchemy.exc import SQLAlchemyError
 import Main.Parser.Parser as Parser
 import Models.SQLModels.User as User
@@ -8,8 +8,8 @@ import Models.SQLModels.Subreddit as Sub
 import Models.SQLModels.Subreddit as SR
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from Models.Containers.PostContainer import PostContainer
 
-#every instance of this class should be its own thread
 class UserContainer:
     ##session need
     @staticmethod
@@ -25,47 +25,16 @@ class UserContainer:
 
 
     def parseUserPage(self):
-        subreddits, nextPage = Parser.get_user_subreddit_posts(self.userLink)
+        userEntry, nextPage = Parser.get_user_subreddit_posts(self.userLink)
         for n in range(0,10):
-            self.insertSubreddit(subreddits)
-            subreddits, nextPage = Parser.get_user_subreddit_posts(nextPage)
+            if userEntry['data-type'] == 'link':
+                PostContainer(userEntry, self.user)
 
+            elif userEntry['data-type'] == 'comment':
+                self.insertCommnent(userEntry)
 
-    def insertSubreddit(self, subredditNames):
-        session = UserContainer.startSession()
-        for subredditName in subredditNames:
-            #check if subreddit entry exists
-            checkSubreddit = session.query(Sub.Subreddit).filter_by(name = subredditName).first()
-
-            # link user and subreddit
-            if checkSubreddit != None:
-                new_subreddit = Sub.Subreddit(
-                    name = subredditName
-                )
-                session.add(new_subreddit)
-
-                new_subreddit_user = Sub.SubredditUserJoin(
-                    user = self.user,
-                    subredditName = new_subreddit
-
-                )
-
-                session.add(new_subreddit_user)
-                session.commit()
             else:
+                ## going log it for now before i figure it out what to do with no it
+                logging.exception("this was not a comment or post: \n" + userEntry)
 
-                new_subreddit_user = Sub.SubredditUserJoin(
-                    user=self.user,
-                    subredditName=checkSubreddit
-
-                )
-
-                session.add(new_subreddit_user)
-                session.commit()
-
-
-    def run(self):
-        #thread runner class...
-        pass
-
-
+            userEntry, nextPage = Parser.get_user_subreddit_posts(nextPage)

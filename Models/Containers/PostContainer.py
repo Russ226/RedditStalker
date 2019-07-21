@@ -18,7 +18,7 @@ class PostContainer:
         session = session_maker()
         return session
 
-    def __init__(self, post):
+    def __init__(self, post, user = None):
 
         self.title = post.findAll('p', {'class', 'title'})[0].findAll('a')[0].text
         self.subreddit = post['data-subreddit']
@@ -30,15 +30,17 @@ class PostContainer:
         self.id = 0
         #only set it to post after commiting it to db
         self.post = None
-        self.user = None
+        self.user = user is not None if user else None
 
     def create_user_model(self):
         session = PostContainer.startSession()
+        user = None
 
-        user = session.query(User.User).filter_by(username=self.author).first()
-        self.user = user
+        if self.user is None:
+            user = session.query(User.User).filter_by(username=self.author).first()
+            self.user = user
 
-        if user is None:
+        if self.user is None and user is None:
             try:
                 new_user = User.User(
                     username=self.author,

@@ -1,5 +1,7 @@
 guidelines for myself and direction of project
 
+useful links https://github.com/rootVIII/proxy_requests
+
 reddit stalker 
 Step Gather Data 1:
 	- parse the first 10 page of the donald 
@@ -30,6 +32,7 @@ tables needed:
 		- id
  		- user_id
 		- content(must be able to handle large walls of text)
+		- link 
 		- created_on
 
 	subreddit:
@@ -68,9 +71,29 @@ post container todo:
 
 	- test duplicate posts inserts
 
-Create a Repo layer for users and Posts to reduce code copying
+Create a Repo layer for users and Posts to reduce code duplication
 	- putting this on hold for now
-			-
+			
+steps for each user: user url -> iterate through each post or comment -> determine if its comment or posts -> save -> next 
+User container todo:
+	- seperate adding comments and posts
+		- create a comment insertion area
+			- determine when a comment entry is a duplicate 
+				- params for duplicate tests: username, subreddit, comment content
+		- use post container to insert comments
+
+	- create test class 
+		- so far i created some basic html tests
+		- test for duplicate comments
+		- test for seprating comments from posts
+		- test when user page count is less than 10
 		
-	
 		
+user runner class:
+	- this class queries all user in the user table and then runs user container for each user
+		- for now im thinking splitting the list into section and each sections runs in a seperate thread	
+
+comment Container:
+	- user data-permalink tag to check for duplicates 
+	- add new column for comment table for link to comment
+
