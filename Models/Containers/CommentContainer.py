@@ -2,8 +2,7 @@ import datetime
 
 from sqlalchemy.exc import SQLAlchemyError
 import logging
-import Models.SQLModels.User as User
-import Models.SQLModels.Post as Post
+import
 import Models.SQLModels.Subreddit as Sub
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -29,6 +28,10 @@ class PostContainer:
         self.comments_link = comment["data-permalink"]
         self.id = 0
         #only set it to post after commiting it to db
-        self.ccmment = None
+        self.comment = None
         self.user = user
+
+    def createComment(self):
+        pass
+
 

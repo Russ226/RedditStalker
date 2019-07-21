@@ -97,3 +97,4 @@ comment Container:
 	- user data-permalink tag to check for duplicates 
 	- add new column for comment table for link to comment
 
+refactor sql tables i dont many - many relationship between subreddit post, and comments

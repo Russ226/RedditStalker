@@ -29,7 +29,6 @@ class PostContainer:
         self.comments_link = post["data-permalink"]
         self.id = 0
         #only set it to post after commiting it to db
-        self.post = None
         self.user = user is not None if user else None
 
     def create_user_model(self):
@@ -60,6 +59,7 @@ class PostContainer:
 
     def create_post_model(self):
         session = PostContainer.startSession()
+        subreddit = self.insert_subreddit()
         try:
             #title will check for uniqueness
             if not self.checkDuplicatePost():
@@ -67,12 +67,11 @@ class PostContainer:
                     title=self.title.strip(),
                     link=self.url,
                     user=self.user,
+                    subreddit = subreddit,
                     created_on = datetime.datetime.now()
                 )
                 session.add(new_post)
                 session.commit()
-                session.flush()
-                self.post = new_post
         except Exception as e:
             logging.exception(e)
 
@@ -80,41 +79,23 @@ class PostContainer:
 
             session.close()
 
-    def insert_post_subreddit(self):
+    def insert_subreddit(self):
 
-        if self.post is not None and self.post.id is not None:
-            session = PostContainer.startSession()
-            subreddit = session.query(Sub.Subreddit).filter_by(name=self.subreddit).first()
+        session = PostContainer.startSession()
+        subreddit = session.query(Sub.Subreddit).filter_by(name=self.subreddit).first()
 
-            if subreddit != None:
-                new_link = Sub.SubredditPostJoin(
-                    post = self.post,
-                    subreddit = subreddit,
-                    subreddit_name=self.subreddit
+        if subreddit != None:
+            return subreddit
 
-                )
+        else:
+            new_subreddit = Sub.Subreddit(
+                name = self.subreddit
+            )
+            session.add(new_subreddit)
+            session.commit()
+            session.flush()
 
-                session.add(new_link)
-                session.commit()
-
-            else:
-                new_subreddit = Sub.Subreddit(
-                    name = self.subreddit
-                )
-                session.add(new_subreddit)
-                session.commit()
-                session.flush()
-
-                new_link = Sub.SubredditPostJoin(
-                    post=self.post,
-                    subreddit=subreddit,
-                    subreddit_name = self.subreddit
-                )
-
-
-                session.add(new_link)
-                session.commit()
-                session.close()
+            return new_subreddit
 
 
 
