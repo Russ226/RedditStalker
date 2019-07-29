@@ -59,10 +59,10 @@ class PostContainer:
 
     def create_post_model(self):
         session = PostContainer.startSession()
-        subreddit = self.insert_subreddit()
         try:
             #title will check for uniqueness
             if not self.checkDuplicatePost():
+                subreddit = self.insert_subreddit()
                 new_post = Post.Post(
                     title=self.title.strip(),
                     link=self.url,
@@ -85,6 +85,7 @@ class PostContainer:
         subreddit = session.query(Sub.Subreddit).filter_by(name=self.subreddit).first()
 
         if subreddit != None:
+            session.close()
             return subreddit
 
         else:
@@ -94,7 +95,7 @@ class PostContainer:
             session.add(new_subreddit)
             session.commit()
             session.flush()
-
+            session.close()
             return new_subreddit
 
 
@@ -107,7 +108,7 @@ class PostContainer:
         dupPost = session.query(Post.Post).filter_by(title = self.title).first()
 
         if dupPost is not None and dupPost.user.username == self.author:
-            checkSubReddit = session.query(Sub.SubredditPostJoin).filter_by(post_id = dupPost.id).first()
+            checkSubReddit = session.query(Sub.Subreddit).filter_by(id = dupPost.subreddit_id).first()
             if checkSubReddit is not None:
                 session.close()
                 return True

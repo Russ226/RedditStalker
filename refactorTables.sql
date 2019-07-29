@@ -51,3 +51,16 @@ CHANGE COLUMN subbredit_name subreddit_name VARCHAR(100) NOT NULL;
 ALTER TABLE redditstalker.subredditsUsersJoin
 CHANGE COLUMN subbredit_name subreddit_name VARCHAR(100) NOT NULL;
 
+Alter Table redditstalker.comments
+ADD Column link varchar(250) NOT NULL AFTER content;
+
+Alter table redditstalker.comments
+ADD column subreddit_id int Not Null after user_id,
+Add Foreign Key (subreddit_id) REFERENCES subreddits(id);
+
+SET foreign_key_checks = 1;
+
+Alter table redditstalker.posts
+ADD column subreddit_id int Not Null after user_id,
+Add Foreign Key (subreddit_id) REFERENCES subreddits(id);
+

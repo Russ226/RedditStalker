@@ -61,7 +61,6 @@ class testPostContainer(unittest.TestCase):
                 newPost = PostContainer(post)
                 newPost.create_user_model()
                 newPost.create_post_model()
-                newPost.insert_post_subreddit()
 
             if nextPage is not None:
                 soup = self.nextPage(nextPage)
@@ -96,7 +95,6 @@ class testPostContainer(unittest.TestCase):
             newPost = PostContainer(post)
             newPost.create_user_model()
             newPost.create_post_model()
-            newPost.insert_post_subreddit()
 
         session = self.startSession()
 

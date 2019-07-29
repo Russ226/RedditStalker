@@ -2,7 +2,6 @@ import datetime
 
 from sqlalchemy.exc import SQLAlchemyError
 import logging
-import
 import Models.SQLModels.Subreddit as Sub
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

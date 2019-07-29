@@ -1,4 +1,4 @@
-from Models.SQLModels import User, Post, Comment
+from Models.SQLModels import User
 import sqlalchemy
 from sqlalchemy.orm import relationship
 
